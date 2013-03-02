@@ -28,16 +28,25 @@
 ;; 
 ;; simply save this file in a directory in my load-path
 ;; and then 
-;; place (require 'ess-R-object-popup) in your .emacs
+;; place
+;;    (require 'ess-R-object-popup)
+;;    (define-key ess-mode-map "\C-c\C-g" 'ess-R-object-popup)
+;;
+;; in yout init file.
 
+;;; Code:
+
+(require 'popup)
+(require 'ess-inf)
 
 ;; the alist
-(setq ess-R-object-popup-alist
+(defvar ess-R-object-popup-alist
       '((numeric    . "summary")
         (factor     . "table")
         (integer    . "summary")
         (lm         . "summary")
-        (other      . "str")))
+        (other      . "str"))
+      "alist of R object")
 
 ;;;###autoload
 (defun ess-R-object-popup ()
@@ -68,14 +77,12 @@
                                    ess-R-object-popup-alist))))
                     (set-buffer curbuf)
                     (ess-command (concat myfun "(" objname ")\n") tmpbuf)
+                    (set-buffer tmpbuf)
                     (let ((bs (buffer-string)))
                       (progn
                         (set-buffer curbuf)
                         (popup-tip bs)))))))))
     (kill-buffer tmpbuf)))
-
-;; default key map
-(define-key ess-mode-map "\C-c\C-g" 'ess-R-object-popup)
 
  (provide 'ess-R-object-popup)
 
